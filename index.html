@@ -172,7 +172,7 @@
             <label>Transfer Type</label>
             <select id="transferType">
                 <option value="erc20">ERC20 Token</option>
-                <option value="GT">GT (Native)</option>
+                <option value="HSK">HSK (Native)</option>
             </select>
             <label id="tokenAddressLabel">Token Address</label>
             <input type="text" id="batchTokenAddress" placeholder="Token Address (e.g., 0x...)">
@@ -290,8 +290,8 @@
             invalidInput: ["Woof! Invalid address or amount, check your input, pup!", "Arf! Something's not right, check your list!", "Bark! Need valid addresses and amounts!"],
             userDenied: ["Woof! You canceled the transaction, pup!", "Arf! Transaction denied, try again when ready!", "Bark! You said no, let's try that again!"],
             invalidToken: ["Woof! Token address issue, check and try again, pup!", "Arf! Token problem, verify the address!", "Bark! Token error, please check it!"],
-            insufficientBalance: ["Woof! Not enough tokens or GT, check your balance, pup!", "Arf! Balance too low, top up!", "Bark! Need more tokens or GT to transfer!"],
-            insufficientGas: ["Woof! Not enough GT for gas, pup!", "Arf! Gas funds too low, try again!", "Bark! Need more GT for gas!"],
+            insufficientBalance: ["Woof! Not enough tokens or HSK, check your balance, pup!", "Arf! Balance too low, top up!", "Bark! Need more tokens or HSK to transfer!"],
+            insufficientGas: ["Woof! Not enough HSK for gas, pup!", "Arf! Gas funds too low, try again!", "Bark! Need more HSK for gas!"],
             insufficientAllowance: ["Woof! Token not authorized, approve first, pup!", "Arf! Need to authorize token!", "Bark! Approve token before transferring!"]
         };
 
@@ -382,17 +382,17 @@
                 return;
             }
             const transferType = document.getElementById('transferType').value;
-            if (transferType === 'GT') {
+            if (transferType === 'HSK') {
                 try {
                     const balance = await web3.eth.getBalance(account);
-                    document.getElementById('batchTokenBalance').innerText = `Balance: ${Number(web3.utils.fromWei(balance, 'ether')).toLocaleString()} GT`;
-                    document.getElementById('balanceLabel').innerText = 'GT Balance';
+                    document.getElementById('batchTokenBalance').innerText = `Balance: ${Number(web3.utils.fromWei(balance, 'ether')).toLocaleString()} HSK`;
+                    document.getElementById('balanceLabel').innerText = 'HSK Balance';
                     document.getElementById('batchTokenAddress').style.display = 'none';
                     document.getElementById('tokenAddressLabel').style.display = 'none';
                     document.getElementById('authorizeBatchButton').style.display = 'none';
                     document.getElementById('batchTransferButton').disabled = false;
                 } catch (error) {
-                    console.error("GT balance error:", error);
+                    console.error("HSK balance error:", error);
                     document.getElementById('batchTokenBalance').innerText = 'Balance: Failed to fetch';
                     document.getElementById('batchTransferButton').disabled = true;
                 }
@@ -424,7 +424,7 @@
         }
 
         async function checkAuthorizationStatus() {
-            if (!web3 || !account || document.getElementById('transferType').value === 'GT') {
+            if (!web3 || !account || document.getElementById('transferType').value === 'HSK') {
                 document.getElementById('authorizeBatchButton').disabled = true;
                 document.getElementById('batchTransferButton').disabled = false;
                 return;
@@ -483,7 +483,7 @@
                 const nativeBalance = await web3.eth.getBalance(account);
                 const gasCost = web3.utils.toBN(gasPrice).mul(web3.utils.toBN(estimatedGas));
                 if (web3.utils.toBN(nativeBalance).lt(gasCost)) {
-                    status.innerText = "Insufficient GT for gas.";
+                    status.innerText = "Insufficient HSK for gas.";
                     dogMessage.innerText = getRandomMessage('insufficientGas');
                     return;
                 }
@@ -506,7 +506,7 @@
                     status.innerText = "Authorization canceled by user.";
                     dogMessage.innerText = getRandomMessage('userDenied');
                 } else if (error.message.includes('insufficient funds for gas')) {
-                    status.innerText = "Insufficient GT for gas.";
+                    status.innerText = "Insufficient HSK for gas.";
                     dogMessage.innerText = getRandomMessage('insufficientGas');
                 } else {
                     status.innerText = "Authorization failed, check token address.";
@@ -568,10 +568,10 @@
                 const gasPrice = await web3.eth.getGasPrice();
                 const nativeBalance = await web3.eth.getBalance(account);
 
-                if (transferType === 'GT') {
+                if (transferType === 'HSK') {
                     const gasCost = web3.utils.toBN(gasPrice).mul(web3.utils.toBN(300000 * recipients.length));
                     if (web3.utils.toBN(nativeBalance).lt(totalAmount.add(gasCost))) {
-                        status.innerText = "Insufficient GT for transfer or gas.";
+                        status.innerText = "Insufficient HSK for transfer or gas.";
                         dogMessage.innerText = getRandomMessage('insufficientBalance');
                         return;
                     }
@@ -608,7 +608,7 @@
                     }
                     const gasCost = web3.utils.toBN(gasPrice).mul(web3.utils.toBN(100000 * recipients.length));
                     if (web3.utils.toBN(nativeBalance).lt(gasCost)) {
-                        status.innerText = "Insufficient GT for gas.";
+                        status.innerText = "Insufficient HSK for gas.";
                         dogMessage.innerText = getRandomMessage('insufficientGas');
                         return;
                     }
@@ -636,8 +636,8 @@
                 if (error.code === 4001) {
                     status.innerText = "Transaction canceled by user.";
                     dogMessage.innerText = getRandomMessage('userDenied');
-                } else if (error.message.includes('insufficient funds for gas') || error.message.includes('Insufficient GT sent')) {
-                    status.innerText = "Insufficient GT for gas or transfer.";
+                } else if (error.message.includes('insufficient funds for gas') || error.message.includes('Insufficient HSK sent')) {
+                    status.innerText = "Insufficient HSK for gas or transfer.";
                     dogMessage.innerText = getRandomMessage('insufficientGas');
                 } else if (error.message.includes('Invalid token address') || error.message.includes('Token address is not a contract')) {
                     status.innerText = "Check token address and try again.";
